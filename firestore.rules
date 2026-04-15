@@ -1,0 +1,112 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function userProfile() {
+      return get(/databases/$(database)/documents/user_profiles/$(request.auth.uid)).data;
+    }
+
+    function hasProfile() {
+      return signedIn() && exists(/databases/$(database)/documents/user_profiles/$(request.auth.uid));
+    }
+
+    function roleIs(role) {
+      return hasProfile() && userProfile().role == role;
+    }
+
+    function companyMatches(companyId) {
+      return hasProfile() && userProfile().companyId == companyId;
+    }
+
+    match /user_profiles/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow create: if signedIn() && request.auth.uid == uid;
+      allow update: if signedIn() && request.auth.uid == uid;
+      allow delete: if false;
+    }
+
+    match /companies/{companyId} {
+      allow read: if signedIn();
+      allow create: if false;
+      allow update: if false;
+
+      allow delete: if false;
+    }
+
+    match /agreements/{agreementId} {
+      allow read: if signedIn() && (
+        (roleIs("developer") && companyMatches(resource.data.developerId)) ||
+        (roleIs("broker") && companyMatches(resource.data.brokerId))
+      );
+      allow create: if false;
+      allow update: if false;
+
+      allow delete: if false;
+    }
+
+    match /contract_requests/{requestId} {
+      allow read: if signedIn() && (
+        (roleIs("developer") && companyMatches(resource.data.developerId)) ||
+        (roleIs("broker") && companyMatches(resource.data.brokerId))
+      );
+
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    match /properties/{propertyId} {
+      allow read: if signedIn();
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    match /agreement_properties/{mapId} {
+      allow read: if signedIn();
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    match /agents/{agentId} {
+      allow read: if signedIn();
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if signedIn();
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    match /activity_logs/{logId} {
+      allow read: if signedIn();
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    match /contract_documents/{documentId} {
+      allow read: if signedIn() && (
+        (roleIs("developer") && companyMatches(resource.data.developerId)) ||
+        (roleIs("broker") && companyMatches(resource.data.brokerId))
+      );
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    match /meta/{docId} {
+      // Counter docs should be server-controlled. In client-only mode this is required.
+      allow read: if signedIn();
+      allow write: if signedIn();
+    }
+  }
+}

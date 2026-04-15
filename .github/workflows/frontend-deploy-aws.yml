@@ -1,0 +1,133 @@
+name: Frontend Deploy (AWS Ubuntu)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "app/**"
+      - "components/**"
+      - "hooks/**"
+      - "lib/**"
+      - "public/**"
+      - "package.json"
+      - "package-lock.json"
+      - "next.config.js"
+      - "tsconfig.json"
+      - "Dockerfile"
+      - ".dockerignore"
+      - "docker-compose.yml"
+      - ".github/workflows/frontend-deploy-aws.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: frontend-deploy-production
+  cancel-in-progress: true
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    outputs:
+      image_ref: ${{ steps.image.outputs.image_ref }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare image tags
+        id: image
+        run: |
+          OWNER_LC="$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')"
+          IMAGE_BASE="ghcr.io/${OWNER_LC}/real-estate-ecosystem-frontend"
+          IMAGE_REF="${IMAGE_BASE}:sha-${GITHUB_SHA}"
+          echo "image_base=${IMAGE_BASE}" >> "$GITHUB_OUTPUT"
+          echo "image_ref=${IMAGE_REF}" >> "$GITHUB_OUTPUT"
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          build-args: |
+            NEXT_PUBLIC_API_BASE_URL=${{ secrets.FRONTEND_NEXT_PUBLIC_API_BASE_URL }}
+          tags: |
+            ${{ steps.image.outputs.image_ref }}
+            ${{ steps.image.outputs.image_base }}:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build_and_push
+
+    steps:
+      - name: Deploy frontend to AWS Ubuntu via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.FRONTEND_AWS_HOST }}
+          username: ${{ secrets.FRONTEND_AWS_USER }}
+          key: ${{ secrets.FRONTEND_AWS_SSH_KEY }}
+          port: 22
+          script_stop: true
+          script: |
+            set -euo pipefail
+
+            APP_DIR="${{ secrets.FRONTEND_AWS_APP_DIR }}"
+            CONTAINER_NAME="${{ secrets.FRONTEND_AWS_CONTAINER_NAME }}"
+            HOST_PORT="${{ secrets.FRONTEND_AWS_HOST_PORT }}"
+            CONTAINER_PORT="${{ secrets.FRONTEND_AWS_CONTAINER_PORT }}"
+            HEALTH_PATH="${{ secrets.FRONTEND_AWS_HEALTH_PATH }}"
+            GHCR_USER="${{ secrets.GHCR_USERNAME }}"
+
+            if [ -z "${APP_DIR}" ]; then APP_DIR="/opt/real-estate/frontend"; fi
+            if [ -z "${CONTAINER_NAME}" ]; then CONTAINER_NAME="real-estate-frontend"; fi
+            if [ -z "${HOST_PORT}" ]; then HOST_PORT="3000"; fi
+            if [ -z "${CONTAINER_PORT}" ]; then CONTAINER_PORT="3000"; fi
+            if [ -z "${HEALTH_PATH}" ]; then HEALTH_PATH="/"; fi
+            if [ -z "${GHCR_USER}" ]; then GHCR_USER="${{ github.repository_owner }}"; fi
+
+            IMAGE_REF="${{ needs.build_and_push.outputs.image_ref }}"
+
+            mkdir -p "${APP_DIR}"
+            cd "${APP_DIR}"
+
+            echo "${{ secrets.GHCR_READ_TOKEN }}" | docker login ghcr.io -u "${GHCR_USER}" --password-stdin
+            docker pull "${IMAGE_REF}"
+
+            if docker ps -a --format '{{.Names}}' | grep -Eq "^${CONTAINER_NAME}$"; then
+              docker stop "${CONTAINER_NAME}" || true
+              docker rm "${CONTAINER_NAME}" || true
+            fi
+
+            if [ -f ".env" ]; then
+              docker run -d \
+                --name "${CONTAINER_NAME}" \
+                --restart unless-stopped \
+                --env-file ".env" \
+                -p "127.0.0.1:${HOST_PORT}:${CONTAINER_PORT}" \
+                "${IMAGE_REF}"
+            else
+              docker run -d \
+                --name "${CONTAINER_NAME}" \
+                --restart unless-stopped \
+                -p "127.0.0.1:${HOST_PORT}:${CONTAINER_PORT}" \
+                "${IMAGE_REF}"
+            fi
+
+            sleep 8
+            curl -fsS "http://127.0.0.1:${HOST_PORT}${HEALTH_PATH}" >/dev/null
+
+            docker image prune -af --filter "until=72h" || true

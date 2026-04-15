@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+:root {
+  --background: #040c1d;
+  --foreground: #f8fafc;
+  --muted: #94a3b8;
+  --card: rgba(15, 23, 42, 0.62);
+  --card-soft: rgba(15, 23, 42, 0.42);
+  --primary: #1d4ed8;
+  --accent: #0f766e;
+  --gold: #d4af37;
+  --ui-radius: 0.375rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-card: var(--card);
+  --font-sans: var(--font-manrope), "Avenir Next", "Segoe UI", sans-serif;
+  --font-display: var(--font-poppins);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--foreground);
+  font-family: var(--font-manrope), "Avenir Next", "Segoe UI", sans-serif;
+  background:
+    radial-gradient(1300px circle at 5% -20%, rgba(29, 78, 216, 0.32), transparent 45%),
+    radial-gradient(900px circle at 95% 10%, rgba(15, 118, 110, 0.3), transparent 45%),
+    linear-gradient(145deg, #040c1d 0%, #09132b 45%, #0b1e3a 100%);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.surface-glass {
+  background: linear-gradient(140deg, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.45));
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.card-border {
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.text-gradient {
+  background: linear-gradient(90deg, #dbeafe 0%, #bfdbfe 35%, #67e8f9 60%, #facc15 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.grid-pattern {
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.1) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-slow {
+  animation: float 4s ease-in-out infinite;
+}
+
+.marketing-btn-primary,
+.marketing-btn-primary:visited,
+.marketing-btn-primary:hover,
+.marketing-btn-primary:active,
+.marketing-btn-primary:focus {
+  color: #ffffff !important;
+}
+
+.marketing-btn-primary * {
+  color: inherit !important;
+}
+
+/* Light dashboard system override for developer/broker app shells */
+.app-light .surface-glass {
+  background: #ffffff !important;
+  border: 1px solid #dbe4eb !important;
+  backdrop-filter: none !important;
+}
+
+.app-light {
+  --ui-radius: 0.375rem;
+}
+
+.app-light .text-white {
+  color: #1f2a44 !important;
+}
+
+.app-light button.text-white,
+.app-light a.text-white {
+  color: #ffffff !important;
+}
+
+.app-light [class*="text-slate-"] {
+  color: #607187 !important;
+}
+
+.app-light [class*="border-slate-"] {
+  border-color: #dbe4eb !important;
+}
+
+.app-light [class*="bg-slate-"] {
+  background: #f8fafc !important;
+}
+
+.app-light [class*="bg-emerald-500/10"],
+.app-light [class*="bg-amber-500/10"],
+.app-light [class*="bg-rose-500/10"] {
+  background: #f8fafc !important;
+}
+
+.app-light button[class*="bg-gradient-to-r"] {
+  background: #1f7d79 !important;
+  color: #ffffff !important;
+}
+
+.app-light table thead {
+  background: #f8fafc !important;
+}
+
+.app-light table tbody tr {
+  border-color: #ecf1f5 !important;
+}
+
+.app-light [class*="fixed inset-0"][class*="bg-slate-950/70"] {
+  background: rgba(15, 23, 42, 0.22) !important;
+}
+
+.app-light .ui-form-shell {
+  border-radius: var(--ui-radius);
+  border: 1px solid #dbe4eb;
+  background: #ffffff;
+  padding: 20px;
+}
+
+.app-light .ui-label {
+  font-size: 13px;
+  line-height: 1.3;
+  font-weight: 500;
+  color: #7f8a99;
+}
+
+.app-light .ui-input,
+.app-light .ui-select,
+.app-light .ui-textarea {
+  margin-top: 8px;
+  width: 100%;
+  border-radius: var(--ui-radius);
+  border: 1px solid #d6dfe7;
+  background: #ffffff;
+  color: #1f2a44;
+  font-size: 14px;
+  line-height: 1.35;
+  outline: none;
+}
+
+.app-light .ui-input,
+.app-light .ui-select {
+  min-height: 44px;
+  padding: 10px 12px;
+}
+
+.app-light .ui-textarea {
+  min-height: 112px;
+  resize: vertical;
+  padding: 10px 12px;
+}
+
+.app-light .ui-input::placeholder,
+.app-light .ui-textarea::placeholder {
+  color: #a3aebb;
+}
+
+.app-light .ui-btn-primary {
+  border-radius: var(--ui-radius);
+  background: #3aa3a8;
+  color: #ffffff !important;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 12px 18px;
+}
+
+.app-light .ui-btn-secondary {
+  border-radius: var(--ui-radius);
+  border: 1px solid #d6dfe7;
+  background: #ffffff;
+  color: #738399;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 12px 18px;
+}
+
+.app-light .rounded-xl,
+.app-light .rounded-lg,
+.app-light .rounded-md {
+  border-radius: var(--ui-radius) !important;
+}
+
+.rounded-sm,
+.rounded,
+.rounded-md,
+.rounded-lg,
+.rounded-xl,
+.rounded-2xl,
+.rounded-3xl {
+  border-radius: var(--ui-radius) !important;
+}

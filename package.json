@@ -1,0 +1,44 @@
+{
+  "name": "real-estate-ecosystem",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "docker:build": "docker build -t real-estate-frontend:latest .",
+    "docker:run": "docker run -d --name real-estate-frontend --restart unless-stopped -p 3000:3000 real-estate-frontend:latest",
+    "docker:up": "docker compose up -d --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f frontend",
+    "lint": "eslint",
+    "firebase:login": "npx firebase-tools login",
+    "firebase:use": "npx firebase-tools use i-m-connect",
+    "deploy:indexes": "npx firebase-tools deploy --only firestore:indexes",
+    "deploy:rules": "npx firebase-tools deploy --only firestore:rules,storage",
+    "deploy:firebase": "npx firebase-tools deploy --only firestore:indexes,firestore:rules,storage"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.90.21",
+    "framer-motion": "^12.36.0",
+    "lucide-react": "^0.577.0",
+    "next": "14.2.24",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "recharts": "^3.8.0",
+    "sonner": "^2.0.7",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^20",
+    "@types/react": "^18.2.79",
+    "@types/react-dom": "^18.2.25",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.24",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "companies",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "type", "order": "ASCENDING" },
+        { "fieldPath": "id", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "companies",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "type", "order": "ASCENDING" },
+        { "fieldPath": "searchableName", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "agreements",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "developerId", "order": "ASCENDING" },
+        { "fieldPath": "id", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "agreements",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "brokerId", "order": "ASCENDING" },
+        { "fieldPath": "id", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "agreements",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "developerId", "order": "ASCENDING" },
+        { "fieldPath": "brokerId", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "contract_requests",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "brokerId", "order": "ASCENDING" },
+        { "fieldPath": "developerId", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "contract_requests",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "developerId", "order": "ASCENDING" },
+        { "fieldPath": "id", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "properties",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "developerId", "order": "ASCENDING" },
+        { "fieldPath": "id", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "properties",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "developerId", "order": "ASCENDING" },
+        { "fieldPath": "projectName", "order": "ASCENDING" },
+        { "fieldPath": "unitNumber", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "agreement_properties",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "agreementId", "order": "ASCENDING" },
+        { "fieldPath": "propertyId", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "agents",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "brokerId", "order": "ASCENDING" },
+        { "fieldPath": "id", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "activity_logs",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "actorRole", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
