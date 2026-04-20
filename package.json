@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:backend": "cd ../estate_backend && npm run dev",
+    "dev:all": "concurrently -k -n backend,frontend -c cyan,magenta \"npm run dev:backend\" \"npm run dev\"",
     "build": "next build",
     "start": "next start",
     "docker:build": "docker build -t real-estate-frontend:latest .",
@@ -36,6 +38,7 @@
     "@types/node": "^20",
     "@types/react": "^18.2.79",
     "@types/react-dom": "^18.2.25",
+    "concurrently": "^9.2.1",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.24",
     "tailwindcss": "^4",

@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Local Development
 
-## Getting Started
+This frontend runs against the separate backend at:
 
-First, run the development server:
+- `../estate_backend`
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Prerequisites
+
+1. Local MongoDB running on `127.0.0.1:27017`
+2. Node.js installed
+
+### Env
+
+Frontend `.env.local`:
+
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Backend `.env` (in `../estate_backend`):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+API_PORT=4000
+MONGODB_URI=mongodb://127.0.0.1:27017/estate_backend
+MONGODB_DB_NAME=estate_backend
+JWT_ACCESS_SECRET=dev-local-secret-change-me
+JWT_ACCESS_EXPIRES_IN=7d
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Run both apps together
 
-## Learn More
+From this frontend directory:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm install
+npm run dev:all
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This starts:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Backend on `http://localhost:4000`
+- Frontend on `http://localhost:3000`
 
-## Deploy on Vercel
+### Run separately
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Backend:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+cd ../estate_backend
+npm install
+npm run dev
+```
+
+Frontend:
+
+```bash
+cd ../real-estate-ecosystem
+npm run dev
+```
